@@ -24,13 +24,15 @@ import {
   serverTimestamp,
   where,
 } from "firebase/firestore";
-import * as Device from "expo-device";
+import { deviceName } from "expo-device";
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+
+import NetInfo from "@react-native-community/netinfo";
 
 export default function App() {
   const [connection, setConnection] = useState(false);
   const [connecting, setConnecting] = useState(true);
-  const phoneID = Device.deviceName;
+  const phoneID = deviceName;
 
   const [tasks, setTasks] = useState();
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,24 +41,10 @@ export default function App() {
 
   //Checking internet connection
   useEffect(() => {
-    const unsubscribe = () => {
-      setConnecting(true);
-      Linking.canOpenURL("https://google.com").then((connection) => {
-        if (!connection) {
-          setConnection(false);
-          setConnecting(false);
-        } else {
-          fetch("https://google.com")
-            .then((res) => setConnection(res.status !== 200 ? false : true))
-            .then(() => {
-              setConnecting(false);
-            });
-        }
-      });
-    };
-    return () => {
-      unsubscribe();
-    };
+    NetInfo.fetch().then((state) => {
+      setConnection(state.isConnected);
+      setConnecting(false);
+    });
   });
 
   //Getting tasks
