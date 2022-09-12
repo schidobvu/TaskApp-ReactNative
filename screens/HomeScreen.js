@@ -8,7 +8,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Linking,
   ActivityIndicator,
 } from "react-native";
 import Header from "../components/Header";
@@ -204,6 +203,7 @@ export default function App() {
               <TextInput
                 style={styles.inputContainer}
                 onChangeText={(value) => setInput(value)}
+                multiline={true}
               />
               <TouchableOpacity onPress={() => storeTask()}>
                 <Icon
