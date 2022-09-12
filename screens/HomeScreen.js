@@ -56,6 +56,7 @@ export default function App() {
       }
     );
     return () => {
+      setConnecting(false);
       unsubscribe();
     };
   }, []);
@@ -169,7 +170,7 @@ export default function App() {
           {connecting ? (
             <ActivityIndicator size="large" color="#ffa32a" />
           ) : (
-            <View>
+            <View style={styles.noConnectionIconContainer}>
               <Icon name="wifi-off" size={75} color="#696969" />
               <Text style={styles.notConnectedText}>not connected</Text>
             </View>

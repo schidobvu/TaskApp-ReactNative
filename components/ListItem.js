@@ -61,6 +61,7 @@ function ListItem({ task, phoneID }) {
               ? styles.listItemText
               : styles.listItemTextUnderline
           }
+          numberOfLines={1}
         >
           {task.data().text}
         </Text>
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   leftSection: {
+    flex: 0.9,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",

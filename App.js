@@ -18,7 +18,7 @@ export default function App() {
         />
         <Stack.Screen
           name="Task"
-          options={{ headerShown: false }}
+          options={{ headerShown: false, animation: "slide_from_right" }}
           component={TaskDetailsScreen}
         />
       </Stack.Navigator>

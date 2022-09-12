@@ -54,6 +54,7 @@ const TaskDetailsScreen = () => {
           style={styles.inputContainer}
           onChangeText={(value) => setInput(value)}
           defaultValue={details}
+          multiline={true}
         />
       </View>
     </View>
