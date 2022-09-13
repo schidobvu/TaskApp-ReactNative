@@ -109,6 +109,8 @@ export default function App() {
         completed: false,
         text: input,
         details: "Add details",
+        time: "set time",
+        date: "set date",
         timestamp: serverTimestamp(),
       });
     }

@@ -33,6 +33,8 @@ function ListItem({ task, phoneID }) {
       title: task.data().text,
       details: task.data().details,
       completed: task.data().completed,
+      taskTime: task.data().time,
+      taskDate: task.data().date,
       phoneID: phoneID,
     });
   };

@@ -12,17 +12,20 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { db } from "../firebase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import DateTimePicker from "@react-native-community/datetimepicker";
+
 const TaskDetailsScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { id, title, details, completed, phoneID } = route.params;
+  const { id, title, details, completed, taskTime, taskDate, phoneID } =
+    route.params;
 
   const [input, setInput] = useState(details);
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-  const [text, setText] = useState("Empty");
+  const [selectedTime, setSelectedTime] = useState(taskTime);
+  const [selectedDate, setSelectedDate] = useState(taskDate);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -39,7 +42,8 @@ const TaskDetailsScreen = () => {
       "/" +
       tempDate.getFullYear();
     let fTime = tempDate.getHours() + ":" + tempDate.getMinutes();
-    setText(fDate + " - " + fTime);
+    setSelectedDate(fDate);
+    setSelectedTime(fTime);
   };
 
   const showMode = (currentMode) => {
@@ -52,13 +56,14 @@ const TaskDetailsScreen = () => {
     const unsubscribe = () => {
       updateDoc(doc(db, phoneID, id), {
         details: input,
-        date: text,
+        date: selectedDate,
+        time: selectedTime,
       });
     };
     return () => {
       unsubscribe();
     };
-  }, [input, text]);
+  }, [input, selectedDate, selectedTime]);
 
   //delete task
   const deleteTask = () => {
@@ -95,9 +100,17 @@ const TaskDetailsScreen = () => {
           multiline={true}
         />
       </View>
-      <View style={styles.dateInput}>
-        <Button title="DatePicker" onPress={() => showMode("date")} />
-        <Button title="DatePicker" onPress={() => showMode("time")} />
+      <View style={styles.dateInputContainter}>
+        <Icon name="calendar-clock" size={20} color="#868686" />
+        <View style={styles.dateTextContainer}>
+          <Text onPress={() => showMode("date")} style={styles.dateText}>
+            {selectedDate}
+          </Text>
+          <Text onPress={() => showMode("time")} style={styles.dateText}>
+            {selectedTime}
+          </Text>
+        </View>
+
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -131,14 +144,14 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 30,
     paddingHorizontal: 10,
-    color: "#dfdfdf",
+    color: "#cacaca",
     fontWeight: "bold",
   },
   titleUnderline: {
     fontSize: 30,
     marginTop: 30,
     paddingHorizontal: 10,
-    color: "#dfdfdf",
+    color: "#cacaca",
     fontWeight: "bold",
     textDecorationLine: "line-through",
   },
@@ -155,5 +168,23 @@ const styles = StyleSheet.create({
     border: 0,
     background: "none",
     fontSize: 20,
+  },
+  dateInputContainter: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: 25,
+    marginLeft: 10,
+  },
+  dateTextContainer: {
+    display: "flex",
+    marginLeft: 20,
+  },
+  dateText: {
+    padding: 10,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: "#b1b1b1",
+    color: "#b1b1b1",
+    marginBottom: 10,
   },
 });
