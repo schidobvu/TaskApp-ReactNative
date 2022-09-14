@@ -21,9 +21,11 @@ const TaskDetailsScreen = () => {
     route.params;
 
   const [input, setInput] = useState(details);
+
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
+
   const [selectedTime, setSelectedTime] = useState(taskTime);
   const [selectedDate, setSelectedDate] = useState(taskDate);
 

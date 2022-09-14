@@ -33,31 +33,30 @@ export default function App() {
   const [connecting, setConnecting] = useState(true);
   const phoneID = deviceName;
 
-  const [tasks, setTasks] = useState();
+  const [tasks, setTasks] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [input, setInput] = useState("");
   const [option, setOption] = useState(1);
 
   //Checking internet connection
   useEffect(() => {
-    NetInfo.fetch().then((state) => {
-      setConnection(state.isConnected);
-      setConnecting(false);
-    });
+    NetInfo.fetch()
+      .then((state) => {
+        setConnection(state.isConnected);
+      })
+      .then(() => {
+        setConnecting(false);
+      });
   });
 
   //Getting tasks
   useEffect(() => {
-    const unsubscribe = onSnapshot(
+    onSnapshot(
       query(collection(db, phoneID), orderBy("timestamp", "desc")),
       (snapshot) => {
         setTasks(snapshot.docs);
       }
     );
-    return () => {
-      setConnecting(false);
-      unsubscribe();
-    };
   }, []);
 
   //filtering tasks
@@ -122,7 +121,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Header />
-
       {/* Filters */}
       <View style={styles.filters}>
         <TouchableOpacity onPress={() => filterTasks("all")}>
@@ -155,9 +153,13 @@ export default function App() {
         </TouchableOpacity>
       </View>
 
-      {/* Body */}
-      {connection ? (
-        // List items
+      {connecting && (
+        <View style={styles.centeredView}>
+          <ActivityIndicator size="large" color="#ffa32a" />
+        </View>
+      )}
+
+      {!connecting && connection && (
         <View style={styles.listItemsContainer}>
           <FlatList
             data={tasks}
@@ -165,21 +167,15 @@ export default function App() {
             keyExtractor={(task) => task.id}
           />
         </View>
-      ) : (
-        // No connection icon
-        <View style={styles.noConnectionIconContainer}>
-          {connecting ? (
-            <ActivityIndicator size="large" color="#ffa32a" />
-          ) : (
-            <View style={styles.noConnectionIconContainer}>
-              <Icon name="wifi-off" size={75} color="#696969" />
-              <Text style={styles.notConnectedText}>not connected</Text>
-            </View>
-          )}
+      )}
+
+      {!connection && !connecting && (
+        <View style={styles.centeredView}>
+          <Icon name="wifi-off" size={75} color="#696969" />
+          <Text style={styles.notConnectedText}>not connected</Text>
         </View>
       )}
 
-      {/* Add item button */}
       <TouchableOpacity
         style={styles.addItemButton}
         onPress={() => openAddTask()}
@@ -189,13 +185,12 @@ export default function App() {
           <Text style={styles.addItemButtonText}>Add Task</Text>
         </View>
       </TouchableOpacity>
-
       {/* Input Text Modal */}
       <View style={styles.centeredView}>
         <Modal
           animationType="slide"
           transparent={true}
-          visible={modalVisible}
+          visible={modalVisible && connection}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}
@@ -320,7 +315,7 @@ const styles = StyleSheet.create({
     width: "80%",
     padding: 10,
   },
-  noConnectionIconContainer: {
+  centeredView: {
     position: "absolute",
     display: "flex",
     justifyContent: "center",
