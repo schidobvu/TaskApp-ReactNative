@@ -83,7 +83,7 @@ export default function App() {
       } else {
         setOption(1);
         //Selecting all tasks
-        const q = query(collection(db, phoneID));
+        const q = query(collection(db, phoneID), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
         setTasks(querySnapshot.docs);
       }
