@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from "react-native";
 import Header from "../components/Header";
 import ListItem from "../components/ListItem";
@@ -119,7 +120,7 @@ export default function App() {
   const renderItem = ({ item }) => <ListItem task={item} phoneID={phoneID} />;
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <Header />
       {/* Filters */}
       <View style={styles.filters}>
@@ -185,8 +186,9 @@ export default function App() {
           <Text style={styles.addItemButtonText}>Add Task</Text>
         </View>
       </TouchableOpacity>
+
       {/* Input Text Modal */}
-      <View style={styles.centeredView}>
+      <View style={styles.inputModalWrap}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -195,7 +197,7 @@ export default function App() {
             setModalVisible(!modalVisible);
           }}
         >
-          <View style={styles.centeredView}>
+          <View style={styles.inputModalWrap}>
             <View style={styles.modalView}>
               <TextInput
                 style={styles.inputContainer}
@@ -217,7 +219,7 @@ export default function App() {
         </Modal>
       </View>
       <StatusBar style="auto" />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -279,7 +281,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginLeft: 5,
   },
-  centeredView: {
+  inputModalWrap: {
+    //check
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",

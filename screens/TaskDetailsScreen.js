@@ -21,6 +21,7 @@ const TaskDetailsScreen = () => {
     route.params;
 
   const [input, setInput] = useState(details);
+  const [isComplete, setIsComplete] = useState(completed);
 
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
@@ -67,6 +68,15 @@ const TaskDetailsScreen = () => {
     };
   }, [input, selectedDate, selectedTime]);
 
+  //mark completed
+  const updateCompleted = (value) => {
+    updateDoc(doc(db, phoneID, id), {
+      completed: value,
+    }).then(() => {
+      setIsComplete(value);
+    });
+  };
+
   //delete task
   const deleteTask = () => {
     deleteDoc(doc(db, phoneID, id)).then(() => {
@@ -90,11 +100,11 @@ const TaskDetailsScreen = () => {
           onPress={() => deleteTask()}
         />
       </View>
-      <Text style={!completed ? styles.title : styles.titleUnderline}>
+      <Text style={!isComplete ? styles.title : styles.titleUnderline}>
         {title}
       </Text>
       <View style={styles.details}>
-        <Icon name="details" size={20} color="#ffa32a" />
+        <Icon name="text" size={25} color="#868686" />
         <TextInput
           style={styles.inputContainer}
           onChangeText={(value) => setInput(value)}
@@ -103,7 +113,7 @@ const TaskDetailsScreen = () => {
         />
       </View>
       <View style={styles.dateInputContainter}>
-        <Icon name="calendar-clock" size={20} color="#868686" />
+        <Icon name="calendar-clock" size={25} color="#868686" />
         <View style={styles.dateTextContainer}>
           <Text onPress={() => showMode("date")} style={styles.dateText}>
             {selectedDate}
@@ -123,6 +133,18 @@ const TaskDetailsScreen = () => {
             onChange={onChange}
           />
         )}
+      </View>
+      <View style={styles.markCompleted}>
+        <Icon
+          name="check"
+          size={40}
+          onPress={() => updateCompleted(!isComplete)}
+          style={
+            isComplete
+              ? styles.markCompletedIconChecked
+              : styles.markCompletedIcon
+          }
+        />
       </View>
     </View>
   );
@@ -188,5 +210,27 @@ const styles = StyleSheet.create({
     borderColor: "#b1b1b1",
     color: "#b1b1b1",
     marginBottom: 10,
+  },
+  markCompleted: {
+    position: "absolute",
+    bottom: "10%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  markCompletedIcon: {
+    padding: 15,
+    borderColor: "#868686",
+    borderWidth: 2,
+    borderRadius: 99999,
+    color: "#868686",
+  },
+  markCompletedIconChecked: {
+    padding: 15,
+    borderColor: "#ffbf10",
+    borderWidth: 2,
+    borderRadius: 99999,
+    color: "#ffbf10",
   },
 });

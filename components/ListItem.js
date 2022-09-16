@@ -68,12 +68,7 @@ function ListItem({ task, phoneID }) {
           {task.data().text}
         </Text>
       </View>
-      <Icon
-        name="minus"
-        size={25}
-        color="#ffffff"
-        onPress={() => deleteTask()}
-      />
+      <Icon name="drag" size={30} color="#a5a5a5" onPress={() => gotoTask()} />
     </TouchableOpacity>
   );
 }
