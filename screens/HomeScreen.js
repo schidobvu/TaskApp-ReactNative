@@ -61,35 +61,19 @@ export default function App() {
   }, []);
 
   //filtering tasks
-  const filterTasks = async (status) => {
-    try {
-      if (status == "completed") {
-        setOption(3);
-        //Selecting only the completed tasks
-        const q = query(
-          collection(db, phoneID),
-          where("completed", "==", true)
-        );
-        const querySnapshot = await getDocs(q);
-        setTasks(querySnapshot.docs);
-      } else if (status == "uncompleted") {
-        setOption(2);
-        //Selecting only the uncompleted tasks
-        const q = query(
-          collection(db, phoneID),
-          where("completed", "==", false)
-        );
-        const querySnapshot = await getDocs(q);
-        setTasks(querySnapshot.docs);
-      } else {
-        setOption(1);
-        //Selecting all tasks
-        const q = query(collection(db, phoneID), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
-        setTasks(querySnapshot.docs);
-      }
-    } catch (err) {
-      console.log(err.message);
+  const filterTasks = async (status, option) => {
+    setOption(option);
+
+    if (option == 1) {
+      const querySnapshot = await getDocs(
+        query(collection(db, phoneID), orderBy("timestamp", "desc"))
+      );
+      setTasks(querySnapshot.docs);
+    } else {
+      const querySnapshot = await getDocs(
+        query(collection(db, phoneID), where("completed", "==", status))
+      );
+      setTasks(querySnapshot.docs);
     }
   };
 
@@ -107,10 +91,10 @@ export default function App() {
       setModalVisible(false);
       addDoc(collection(db, phoneID), {
         completed: false,
-        text: input,
+        title: input,
         details: "Add details",
-        time: "set time",
-        date: "set date",
+        time: "set due time",
+        date: "set due date",
         timestamp: serverTimestamp(),
       });
     }
@@ -124,7 +108,7 @@ export default function App() {
       <Header />
       {/* Filters */}
       <View style={styles.filters}>
-        <TouchableOpacity onPress={() => filterTasks("all")}>
+        <TouchableOpacity onPress={() => filterTasks("", 1)}>
           <Text
             style={
               option == 1 ? styles.filterButtonActive : styles.filterButton
@@ -133,7 +117,7 @@ export default function App() {
             All
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => filterTasks("uncompleted")}>
+        <TouchableOpacity onPress={() => filterTasks(false, 2)}>
           <Text
             style={
               option == 2 ? styles.filterButtonActive : styles.filterButton
@@ -143,7 +127,7 @@ export default function App() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => filterTasks("completed")}>
+        <TouchableOpacity onPress={() => filterTasks(true, 3)}>
           <Text
             style={
               option == 3 ? styles.filterButtonActive : styles.filterButton
@@ -187,7 +171,7 @@ export default function App() {
         </View>
       </TouchableOpacity>
 
-      {/* Input Text Modal */}
+      {/* Add Text Modal */}
       <View style={styles.inputModalWrap}>
         <Modal
           animationType="slide"

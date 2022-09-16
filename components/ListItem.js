@@ -30,7 +30,7 @@ function ListItem({ task, phoneID }) {
   const gotoTask = () => {
     navigation.navigate("Task", {
       id: task.id,
-      title: task.data().text,
+      title: task.data().title,
       details: task.data().details,
       completed: task.data().completed,
       taskTime: task.data().time,
@@ -65,7 +65,7 @@ function ListItem({ task, phoneID }) {
           }
           numberOfLines={1}
         >
-          {task.data().text}
+          {task.data().title}
         </Text>
       </View>
       <Icon name="drag" size={30} color="#a5a5a5" onPress={() => gotoTask()} />

@@ -20,7 +20,8 @@ const TaskDetailsScreen = () => {
   const { id, title, details, completed, taskTime, taskDate, phoneID } =
     route.params;
 
-  const [input, setInput] = useState(details);
+  const [detailsInput, setDetailsInput] = useState(details);
+  const [titleInput, setTitleInput] = useState(title);
   const [isComplete, setIsComplete] = useState(completed);
 
   const [date, setDate] = useState(new Date());
@@ -35,8 +36,8 @@ const TaskDetailsScreen = () => {
     setShow(false);
     setDate(currentDate);
 
-    // tempDate - tempolary date
-    // fdate - format date
+    // tempDate - temporary date
+    // fDate - format date
     let tempDate = new Date(currentDate);
     let fDate =
       tempDate.getDate() +
@@ -58,15 +59,16 @@ const TaskDetailsScreen = () => {
   useEffect(() => {
     const unsubscribe = () => {
       updateDoc(doc(db, phoneID, id), {
-        details: input,
+        details: detailsInput,
         date: selectedDate,
         time: selectedTime,
+        title: titleInput,
       });
     };
     return () => {
       unsubscribe();
     };
-  }, [input, selectedDate, selectedTime]);
+  }, [detailsInput, titleInput, selectedDate, selectedTime]);
 
   //mark completed
   const updateCompleted = (value) => {
@@ -100,15 +102,18 @@ const TaskDetailsScreen = () => {
           onPress={() => deleteTask()}
         />
       </View>
-      <Text style={!isComplete ? styles.title : styles.titleUnderline}>
-        {title}
-      </Text>
+      <TextInput
+        style={!isComplete ? styles.title : styles.titleUnderline}
+        onChangeText={(value) => setTitleInput(value)}
+        defaultValue={titleInput}
+        multiline={true}
+      />
       <View style={styles.details}>
         <Icon name="text" size={25} color="#868686" />
         <TextInput
           style={styles.inputContainer}
-          onChangeText={(value) => setInput(value)}
-          defaultValue={details}
+          onChangeText={(value) => setDetailsInput(value)}
+          defaultValue={detailsInput}
           multiline={true}
         />
       </View>
@@ -175,7 +180,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginTop: 30,
     paddingHorizontal: 10,
-    color: "#cacaca",
+    color: "#a3a3a3",
     fontWeight: "bold",
     textDecorationLine: "line-through",
   },
